@@ -35,7 +35,8 @@ object FruitHarvesting extends App {
   }
 
   // Group by month, then find fruit with max income
-  val topFruitPerMonth: Map[String, (String, Double)] ={
+  implicit def reverseOrdering: Ordering[Int] = Ordering.fromLessThan(_ > _)
+  val topFruitPerMonth: List[(String, (String, Double))] ={
     incomeFruitPerMonth
       .groupBy { case ((fruit, month), _) => month }
       .mapValues { fruitMap =>
@@ -43,6 +44,8 @@ object FruitHarvesting extends App {
           .map { case ((fruit, _), amount) => (fruit, amount) }
           .maxBy(_._2)
       }
+      .toList
+      .sortBy{case(month,_)=>month}
   }
 
   println("Best Earning fruit by month:")
